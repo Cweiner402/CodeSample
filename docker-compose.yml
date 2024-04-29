@@ -1,0 +1,29 @@
+version: '3.8'
+services:
+  api:
+    build:
+      context: ./BCChallenge
+      dockerfile: Dockerfile.dockerfile
+    ports:
+      - "5055:5055"
+    environment:
+      - "ConnectionStrings__BcDB=${DB_CONNECTION_STRING}"
+    depends_on:
+      - sqlserver
+
+  frontend:
+    build:
+      context: ./BCChallengeFrontEnd/BCFrontEnd
+      dockerfile: Dockerfile.dockerfile
+    ports:
+      - "5173:80"
+    depends_on:
+      - api
+
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    environment:
+      SA_PASSWORD: "YourStrong(!)Password"
+      ACCEPT_EULA: "Y"
+    ports:
+      - "1433:1433"
